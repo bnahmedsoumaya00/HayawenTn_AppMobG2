@@ -1,0 +1,135 @@
+# ============================================================
+# 🌍 Global Ignore for Haywane Project (Frontend + Backend)
+# ============================================================
+
+# -------------------------
+# 🧠 General OS Files
+# -------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
+
+# -------------------------
+# 🧰 Node.js / npm / Yarn
+# -------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# -------------------------
+# ⚙️ Environment Variables
+# -------------------------
+.env
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# -------------------------
+# 🧩 Build and Output
+# -------------------------
+dist/
+build/
+.cache/
+.expo/
+.expo-shared/
+coverage/
+web-build/
+android/
+ios/
+*.apk
+*.aab
+
+# -------------------------
+# 🧱 React Native / Expo
+# -------------------------
+# Expo
+.expo/
+.expo-shared/
+.expo-dev/
+.expo-env.json
+
+# Metro bundler cache
+metro-cache/
+*.packager.log
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+expo-debug.log
+
+# -------------------------
+# 🗃️ Backend (Express / API)
+# -------------------------
+# Compiled or temporary files
+*.tmp
+*.temp
+tmp/
+.cache/
+dist/
+out/
+build/
+
+# Logs
+logs/
+*.log
+
+# Databases
+*.sqlite
+*.db
+*.sql
+*.sqlite3
+
+# Uploads or static files
+uploads/
+public/uploads/
+storage/
+backup/
+
+# -------------------------
+# 🧠 IDE & Editor Files
+# -------------------------
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# -------------------------
+# 🚀 Testing
+# -------------------------
+coverage/
+jest-cache/
+jest-debug.log
+
+# -------------------------
+# 🧰 Miscellaneous
+# -------------------------
+*.iml
+*.bak
+*.orig
+*.rej
+*.seed
+*.tgz
+*.zip
+*.tar.gz
+
+# -------------------------
+# 💡 Custom Folders (optional)
+# -------------------------
+# If you store private configs or test data locally:
+local/
+private/
+temp/
+test-results/
