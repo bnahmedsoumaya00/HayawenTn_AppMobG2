@@ -13,6 +13,10 @@ const { testConnection } = require('./src/config/database');
 // Importer les routes
 const authRoutes = require('./src/routes/authRoutes');
 const productRoutes = require('./src/routes/productRoutes');
+const announcementRoutes = require('./src/routes/announcementRoutes'); // ← AJOUTE
+const veterinarianRoutes = require('./src/routes/veterinarianRoutes');
+const favoriteRoutes = require('./src/routes/favoriteRoutes');
+const uploadRoutes = require('./src/routes/uploadRoutes');
 
 // Importer le gestionnaire d'erreurs
 const errorHandler = require('./src/middleware/errorHandler');
@@ -45,6 +49,10 @@ app.get('/', (req, res) => {
 // Routes API
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/announcements', announcementRoutes); // ← AJOUTE
+app.use('/api/veterinarians', veterinarianRoutes);
+app.use('/api/favorites', favoriteRoutes); 
+app.use('/api/upload', uploadRoutes);
 
 // Route 404 - endpoint non trouvé
 app.use('*', (req, res) => {
