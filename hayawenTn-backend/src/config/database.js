@@ -1,13 +1,38 @@
-const admin = require('./firebase');
+// src/config/database.js
+const mysql = require('mysql2/promise');
 
-// Référence à Firestore
-const db = admin.firestore();
-
-// Configuration Firestore
-db.settings({
-  timestampsInSnapshots: true
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'haywane_tn',
+  port: process.env.DB_PORT || 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-console.log('✅ Firestore connecté');
+const testConnection = async () => {
+  try {
+    const connection = await pool.getConnection();
+    console.log('✅ MySQL Database connected successfully!');
+    console.log(`   Database: ${process.env.DB_NAME}`);
+    connection.release();
+    return true;
+  } catch (error) {
+    console.error('❌ MySQL connection error:', error.message);
+    throw error;
+  }
+};
 
-module.exports = db;
+const query = async (sql, params = []) => {
+  try {
+    const [rows] = await pool.execute(sql, params);
+    return rows;
+  } catch (error) {
+    console.error('❌ Query error:', error.message);
+    throw error;
+  }
+};
+
+module.exports = { pool, query, testConnection };
