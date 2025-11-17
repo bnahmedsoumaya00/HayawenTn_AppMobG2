@@ -14,6 +14,9 @@ import TabNavigator from './src/navigation/TabNavigator';
 
 // Context
 import { AuthContext } from './src/context/AuthContext';
+import StoreScreen from './src/screens/products/ProductsScreen';
+import VeterinariansScreen from './src/screens/veterinarians/VeterinariansScreen';
+
 
 const Stack = createStackNavigator();
 

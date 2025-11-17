@@ -1,50 +1,124 @@
-// src/navigation/TabNavigator.js
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Feather } from '@expo/vector-icons';
-import { colors } from '../styles/colors';
+import { View, StyleSheet, Image } from 'react-native';
 
-// Écrans
+// Import des écrans
 import HomeScreen from '../screens/home/HomeScreen';
-import ProductsScreen from '../screens/products/ProductsScreen';
 import AnnouncementsScreen from '../screens/announcements/AnnouncementsScreen';
+import ProductsScreen from '../screens/products/ProductsScreen';
 import VeterinariansScreen from '../screens/veterinarians/VeterinariansScreen';
-import ProfileScreen from '../screens/profile/ProfileScreen';
+import LoginScreen from '../screens/auth/LoginScreen';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          if (route.name === 'Home') iconName = 'ic_home';
-          else if (route.name === 'Products') iconName = 'Shopping bag';
-          else if (route.name === 'Announcements') iconName = 'annonces';
-          else if (route.name === 'Veterinarians') iconName = 'Stethoscope';
-          else if (route.name === 'Profile') iconName = 'account_circle';
-
-          return <Feather name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: '#8A96BC',
-        tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopWidth: 1,
-          borderTopColor: '#E0E0E0',
-          height: 60,
-          paddingBottom: 5,
-        },
+      screenOptions={{
         headerShown: false,
-      })}
+        tabBarStyle: styles.tabBar,
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: '#E97A3A',
+        tabBarInactiveTintColor: '#1F5C40',
+      }}
     >
-      <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Accueil' }} />
-      <Tab.Screen name="Products" component={ProductsScreen} options={{ title: 'Produits' }} />
-      <Tab.Screen name="Announcements" component={AnnouncementsScreen} options={{ title: 'Annonces' }} />
-      <Tab.Screen name="Veterinarians" component={VeterinariansScreen} options={{ title: 'Vétérinaires' }} />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: 'Profil' }} />
+
+      {/* Home */}
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Image
+              source={require('../assets/icons/ic_home.png')}
+              style={[styles.icon, { tintColor: color }]}
+            />
+          ),
+        }}
+      />
+
+      {/* Announcements */}
+      <Tab.Screen
+        name="Announcements"
+        component={AnnouncementsScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Image
+              source={require('../assets/icons/annonces.png')}
+              style={[styles.icon, { tintColor: color }]}
+            />
+          ),
+        }}
+      />
+
+      {/* Products */}
+      <Tab.Screen
+        name="Products"
+        component={ProductsScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Image
+              source={require('../assets/icons/Shoppingbag.png')}
+              style={[styles.icon, { tintColor: color }]}
+            />
+          ),
+        }}
+      />
+
+      {/* Veterinarians */}
+      <Tab.Screen
+        name="Veterinarians"
+        component={VeterinariansScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Image
+              source={require('../assets/icons/Stethoscope.png')}
+              style={[styles.icon, { tintColor: color }]}
+            />
+          ),
+        }}
+      />
+
+      {/* Profile */}
+      <Tab.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Image
+              source={require('../assets/icons/account_circle.png')}
+              style={[styles.icon, { tintColor: color }]}
+            />
+          ),
+        }}
+      />
+
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBar: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 38,
+    borderTopRightRadius: 38,
+    height: 80,
+    paddingBottom: 10,
+    paddingTop: 10,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+  },
+
+  icon: {
+    width: 28,
+    height: 28,
+    resizeMode: 'contain',
+  },
+});

@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  Image,
   StyleSheet,
-  TouchableOpacity,
   TextInput,
-  ScrollView,
+  TouchableOpacity,
+  Image,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
@@ -20,6 +19,7 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = () => {
     // Appel API login
     console.log('Login:', { email, password });
+    navigation.replace('MainApp');
   };
 
   return (
@@ -27,7 +27,7 @@ export default function LoginScreen({ navigation }) {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <View style={styles.content}>
         {/* Logo */}
         <Image
           source={require('../../assets/images/logo.png')}
@@ -62,12 +62,18 @@ export default function LoginScreen({ navigation }) {
             style={styles.eyeIcon}
             onPress={() => setShowPassword(!showPassword)}
           >
-            <Icon name={showPassword ? 'eye' : 'eye-off'} size={20} color="#6A707C" />
+            <Icon
+              name={showPassword ? 'eye' : 'eye-off'}
+              size={20}
+              color="#8A96BC"
+            />
           </TouchableOpacity>
         </View>
 
         {/* Forgot Password */}
-        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ForgotPassword')}
+        >
           <Text style={styles.forgotPassword}>Forgot Password?</Text>
         </TouchableOpacity>
 
@@ -84,7 +90,9 @@ export default function LoginScreen({ navigation }) {
           <Text style={styles.registerButtonText}>Register</Text>
           <Icon name="arrow-right" size={20} color="#FFFFFF" />
         </TouchableOpacity>
-      </ScrollView>
+      </View>
+
+     
     </KeyboardAvoidingView>
   );
 }
@@ -94,26 +102,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F1E6D5',
   },
-  scrollContent: {
-    flexGrow: 1,
+  content: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 26,
-    paddingTop: 60,
   },
   logo: {
-    width: 263,
-    height: 195,
-    marginBottom: 40,
+    width: 200,
+    height: 180,
+    marginBottom: 50,
   },
   inputContainer: {
-    width: 362,
-    height: 54,
+    width: '100%',
     marginBottom: 15,
     position: 'relative',
   },
   input: {
     width: '100%',
-    height: '100%',
+    height: 54,
     backgroundColor: '#FFFFFF',
     borderWidth: 2.208,
     borderColor: '#F7F8F8',
@@ -121,7 +128,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     fontSize: 14,
     fontFamily: 'Poppins-Regular',
-    color: '#8A96BC',
+    color: '#000',
   },
   eyeIcon: {
     position: 'absolute',
@@ -135,11 +142,11 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     marginBottom: 20,
     alignSelf: 'flex-end',
-    width: 362,
+    width: '100%',
     textAlign: 'right',
   },
   loginButton: {
-    width: 362,
+    width: '100%',
     height: 52,
     backgroundColor: '#1F5C40',
     borderRadius: 10,
@@ -154,7 +161,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
   },
   registerButton: {
-    width: 362,
+    width: '100%',
     height: 52,
     backgroundColor: '#E97A3A',
     borderRadius: 10,
@@ -168,5 +175,27 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Medium',
     color: '#FFFFFF',
     letterSpacing: 0.4,
+  },
+  bottomNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    height: 70,
+    borderTopLeftRadius: 38,
+    borderTopRightRadius: 38,
+    paddingHorizontal: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  navIcon: {
+    padding: 10,
+  },
+  navIconActive: {
+    backgroundColor: '#F1E6D5',
+    borderRadius: 20,
   },
 });
