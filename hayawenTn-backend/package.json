@@ -8,26 +8,34 @@
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["hayawenTn", "pets", "ecommerce", "tunisia"],
+  "keywords": [
+    "hayawenTn",
+    "pets",
+    "ecommerce",
+    "tunisia"
+  ],
   "authors": [
     "SOUMAYA BEN AHMED",
     "TESNIME BEN SALAH"
   ],
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2",
-    "firebase-admin": "^11.11.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
     "bcryptjs": "^2.4.3",
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "express-validator": "^7.3.0",
+    "firebase": "^12.5.0",
+    "firebase-admin": "^13.6.0",
+    "helmet": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.1",
     "multer": "^1.4.5-lts.1",
-    "express-validator": "^7.0.1",
-    "helmet": "^7.1.0",
-    "morgan": "^1.10.0",
-    "compression": "^1.7.4"
+    "mysql2": "^3.15.3",
+    "sequelize": "^6.37.7"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.1.11"
   }
 }
