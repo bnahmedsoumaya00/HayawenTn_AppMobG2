@@ -83,13 +83,11 @@ export default function ProductsScreen({ navigation }) {
           </TouchableOpacity>
           
           <View style={styles.banner}>
-            <Text style={styles.bannerBadge}>SPECIAL OFFER</Text>
-            <Text style={styles.bannerDiscount}>25% Discount</Text>
             <Image
-              source={require('../../assets/images/banner-offer.png')}
-              style={styles.bannerImage}
-              resizeMode="contain"
-            />
+                          source={require('../../assets/affiche/banner1.png')}
+                          style={styles.bannerImage}
+                          resizeMode="cover"
+                        />
           </View>
 
           <TouchableOpacity style={styles.arrowRight}>

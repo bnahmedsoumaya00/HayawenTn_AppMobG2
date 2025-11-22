@@ -16,7 +16,7 @@ export default function SplashScreen({ navigation }) {
 
     // Redirection directe vers Home après 2s
     const timer = setTimeout(() => {
-      navigation.replace('Home');
+      navigation.replace('MainApp');
     }, 5000);
 
     return () => clearTimeout(timer);

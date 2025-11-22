@@ -1,8 +1,9 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-// Import des écrans
 import HomeScreen from '../screens/home/HomeScreen';
 import AnnouncementsScreen from '../screens/announcements/AnnouncementsScreen';
 import ProductsScreen from '../screens/products/ProductsScreen';
@@ -18,77 +19,67 @@ export default function TabNavigator() {
         headerShown: false,
         tabBarStyle: styles.tabBar,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: '#E97A3A',
+        tabBarActiveTintColor: '#fff',
         tabBarInactiveTintColor: '#1F5C40',
       }}
     >
 
-      {/* Home */}
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Image
-              source={require('../assets/icons/ic_home.png')}
-              style={[styles.icon, { tintColor: color }]}
-            />
+          tabBarIcon: ({ color, focused }) => (
+            <View style={focused ? styles.iconActive : styles.iconInactive}>
+              <Icon name="home" size={28} color={focused ? '#fff' : color} />
+            </View>
           ),
         }}
       />
 
-      {/* Announcements */}
       <Tab.Screen
         name="Announcements"
         component={AnnouncementsScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Image
-              source={require('../assets/icons/annonces.png')}
-              style={[styles.icon, { tintColor: color }]}
-            />
+          tabBarIcon: ({ color, focused }) => (
+            <View style={focused ? styles.iconActive : styles.iconInactive}>
+              <Icon name="heart" size={28} color={focused ? '#fff' : color} />
+            </View>
           ),
         }}
       />
 
-      {/* Products */}
       <Tab.Screen
         name="Products"
         component={ProductsScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Image
-              source={require('../assets/icons/Shoppingbag.png')}
-              style={[styles.icon, { tintColor: color }]}
-            />
+          tabBarIcon: ({ color, focused }) => (
+            <View style={focused ? styles.iconActive : styles.iconInactive}>
+              <Icon name="shopping-bag" size={28} color={focused ? '#fff' : color} />
+            </View>
           ),
         }}
       />
 
-      {/* Veterinarians */}
       <Tab.Screen
         name="Veterinarians"
         component={VeterinariansScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Image
-              source={require('../assets/icons/Stethoscope.png')}
-              style={[styles.icon, { tintColor: color }]}
-            />
+          tabBarIcon: ({ color, focused }) => (
+            <View style={focused ? styles.iconActive : styles.iconInactive}>
+              <MaterialCommunityIcons name="stethoscope" size={28} color={focused ? '#fff' : color} />
+            </View>
           ),
         }}
       />
 
-      {/* Profile */}
       <Tab.Screen
         name="LoginScreen"
         component={LoginScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Image
-              source={require('../assets/icons/account_circle.png')}
-              style={[styles.icon, { tintColor: color }]}
-            />
+          tabBarIcon: ({ color, focused }) => (
+            <View style={focused ? styles.iconActive : styles.iconInactive}>
+              <Icon name="user" size={28} color={focused ? '#fff' : color} />
+            </View>
           ),
         }}
       />
@@ -102,9 +93,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 38,
     borderTopRightRadius: 38,
-    height: 80,
-    paddingBottom: 10,
-    paddingTop: 10,
+    height: 90,
+    paddingBottom: 20,
+    paddingTop: 3,
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -116,9 +107,23 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
   },
 
-  icon: {
-    width: 28,
-    height: 28,
-    resizeMode: 'contain',
+  iconInactive: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  iconActive: {
+    width: 70,
+    height: 70,
+    borderRadius: 40,
+    backgroundColor: '#E97A3A',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 30,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
 });

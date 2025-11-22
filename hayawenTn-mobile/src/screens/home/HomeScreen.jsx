@@ -1,120 +1,251 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
-
-
   TextInput,
   TouchableOpacity,
-
   Image,
+  Dimensions,
+  FlatList,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
-export default function HomeScreen({ navigation }) {
-  const categories = [
-    { id: 1, name: 'Food', icon: require('../../assets/icons/food.png') },
-    { id: 2, name: 'Toy', icon: require('../../assets/icons/toy.png') },
-    { id: 3, name: 'Potion', icon: require('../../assets/icons/potion.png') },
-    { id: 4, name: 'Finery', icon: require('../../assets/icons/finery.png') },
-    { id: 5, name: 'Tools', icon: require('../../assets/icons/tools.png') },
+const { width } = Dimensions.get('window');
 
-    { id: 6, name: 'Dress', icon: require('../../assets/icons/dress.png') },
+export default function HomeScreen({ navigation }) {
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const bannerScrollRef = useRef(null);
+
+  // 3 images du banner qui changent automatiquement
+  const banners = [
+    require('../../assets/affiche/banner1.png'),
+    require('../../assets/affiche/banner2.png'),
+    require('../../assets/affiche/banner3.png'),
   ];
+
+  // Catégories avec navigation
+  const categories = [
+    { id: 1, name: 'Food', icon: require('../../assets/icons/food.png'), route: 'Products' },
+    { id: 2, name: 'Toy', icon: require('../../assets/icons/toy.png'), route: 'Products' },
+    { id: 3, name: 'Potion', icon: require('../../assets/icons/potion.png'), route: 'Products' },
+    { id: 4, name: 'veto', icon: require('../../assets/icons/Vector.png'), route: 'Veterinarians' },
+    { id: 5, name: 'animaux', icon: require('../../assets/icons/annonces2.png'), route: 'Announcements' },
+    { id: 6, name: 'Dress', icon: require('../../assets/icons/dress.png'), route: 'Products' },
+  ];
+
+  // Produits populaires
+  const products = [
+    { id: 1, name: 'Ollie Dog Food', price: '45.99 DT', image: require('../../assets/images/product1.png') },
+    { id: 2, name: 'Premium Cat Food', price: '39.99 DT', image: require('../../assets/images/product2.png') },
+  ];
+
+  // Changement automatique du banner toutes les 3 secondes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBannerIndex((prevIndex) => {
+        const nextIndex = (prevIndex + 1) % banners.length;
+        bannerScrollRef.current?.scrollToIndex({
+          index: nextIndex,
+          animated: true,
+        });
+        return nextIndex;
+      });
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Navigation flèche gauche banner
+  const handlePrevBanner = () => {
+    const newIndex = currentBannerIndex === 0 ? banners.length - 1 : currentBannerIndex - 1;
+    setCurrentBannerIndex(newIndex);
+    bannerScrollRef.current?.scrollToIndex({
+      index: newIndex,
+      animated: true,
+    });
+  };
+
+  // Navigation flèche droite banner
+  const handleNextBanner = () => {
+    const newIndex = (currentBannerIndex + 1) % banners.length;
+    setCurrentBannerIndex(newIndex);
+    bannerScrollRef.current?.scrollToIndex({
+      index: newIndex,
+      animated: true,
+    });
+  };
+
+  // Rendu d'un banner
+  const renderBanner = ({ item }) => (
+    <View style={styles.bannerItem}>
+      <Image source={item} style={styles.bannerImage} resizeMode="cover" />
+    </View>
+  );
+
+  // Rendu d'une catégorie
+  const renderCategory = ({ item }) => (
+    <TouchableOpacity
+      style={styles.categoryCard}
+      onPress={() => navigation.navigate(item.route)}
+    >
+      <View style={styles.categoryIcon}>
+        <Image source={item.icon} style={styles.categoryImage} resizeMode="contain" />
+      </View>
+      <Text style={styles.categoryName}>{item.name}</Text>
+    </TouchableOpacity>
+  );
+
+  // Rendu d'un produit
+  const renderProduct = ({ item }) => (
+    <TouchableOpacity style={styles.productCard}>
+      <Image source={item.image} style={styles.productImage} resizeMode="cover" />
+      <View style={styles.productInfo}>
+        <Text style={styles.productName}>{item.name}</Text>
+        <Text style={styles.productPrice}>{item.price}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header avec Logo */}
         <View style={styles.header}>
-          <Text style={styles.logo}>HayaWenTN</Text>
+          <Image
+            source={require('../../assets/images/logo-header.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
           <TouchableOpacity>
-            <Icon name="logo-header" size={24} color="#1F5C40" />
+            <Icon name="bell" size={24} color="#1F5C40" />
           </TouchableOpacity>
         </View>
 
         <Text style={styles.subtitle}>Hi, Discover posts...</Text>
 
-
         {/* Barre de recherche */}
         <View style={styles.searchContainer}>
-
           <Icon name="search" size={20} color="#999" style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
             placeholder="Search"
-
             placeholderTextColor="#999"
           />
         </View>
 
-        {/* Banner SPECIAL OFFER */}
+        {/* Banner Carousel avec 3 images */}
         <View style={styles.bannerContainer}>
-          <TouchableOpacity style={styles.arrowLeft}>
-            <Icon name="chevron-left" size={20} color="#000" />
+          <TouchableOpacity style={styles.arrowLeft} onPress={handlePrevBanner}>
+            <Icon name="chevron-left" size={20} color="#FFF" />
           </TouchableOpacity>
-          
-          <View style={styles.banner}>
-            <Text style={styles.bannerBadge}>SPECIAL OFFER</Text>
-            <Text style={styles.bannerDiscount}>25% Discount</Text>
-            <Image
-              source={require('../../assets/images/banner-offer.png')}
-              style={styles.bannerImage}
-              resizeMode="cover"
+
+          <FlatList
+            ref={bannerScrollRef}
+            data={banners}
+            renderItem={renderBanner}
+            keyExtractor={(item, index) => index.toString()}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            scrollEnabled={false}
+            style={styles.bannerList}
+          />
+
+          <TouchableOpacity style={styles.arrowRight} onPress={handleNextBanner}>
+            <Icon name="chevron-right" size={20} color="#FFF" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Indicateurs du carousel */}
+        <View style={styles.dotsContainer}>
+          {banners.map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.dot,
+                currentBannerIndex === index && styles.activeDot,
+              ]}
             />
-          </View>
-
-          <TouchableOpacity style={styles.arrowRight}>
-
-            <Icon name="chevron-right" size={20} color="#000" />
-          </TouchableOpacity>
+          ))}
         </View>
 
-       
-
-
-        {/* Featured Item Section */}
-        <View style={styles.sectionHeader}>
-
-          <Text style={styles.sectionTitle}>Featured Item</Text>
-          <TouchableOpacity>
-            <Text style={styles.viewAll}>View All →</Text>
-          </TouchableOpacity>
-        </View>
-
-      
+        {/* Catégories horizontales */}
+        <FlatList
+          data={categories}
+          renderItem={renderCategory}
+          keyExtractor={(item) => item.id.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoriesScroll}
+        />
 
         {/* Popular Item Section */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Popular Item</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Products')}>
             <Text style={styles.viewAll}>View All →</Text>
           </TouchableOpacity>
         </View>
 
-       
+        {/* Liste des produits */}
+        <FlatList
+          data={products}
+          renderItem={renderProduct}
+          keyExtractor={(item) => item.id.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.productsScroll}
+        />
 
-        {/* Find Doctor Banner */}
+        {/* Lien rapide vers Vétérinaires */}
+        <TouchableOpacity
+          style={styles.quickLinkVet}
+          onPress={() => navigation.navigate('Veterinarians')}
+        >
+          <Icon name="heart" size={20} color="#E97A3A" />
+          <Text style={styles.quickLinkText}>Find a Veterinarian</Text>
+          <Icon name="arrow-right" size={20} color="#E97A3A" />
+        </TouchableOpacity>
+
+        {/* Banner Vétérinaire (2 images alternées) */}
         <TouchableOpacity
           style={styles.doctorBanner}
           onPress={() => navigation.navigate('Veterinarians')}
         >
-
-          <Text style={styles.doctorTitle}>FIND A VET</Text>
-          <Text style={styles.doctorSubtitle}>NEAR YOU</Text>
+          <View style={styles.doctorContent}>
+            <Text style={styles.doctorTitle}>FIND DOCTOR</Text>
+            <Text style={styles.doctorSubtitle}>NEAR YOU</Text>
+          </View>
           <Image
             source={require('../../assets/images/doctor-banner.png')}
             style={styles.doctorImage}
-            resizeMode="cover"
-
-/>
+            resizeMode="contain"
+          />
         </TouchableOpacity>
+
+        {/* Featured Item Section (comme les carousels produits précédents) */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Featured Item</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Products')}>
+            <Text style={styles.viewAll}>View All →</Text>
+          </TouchableOpacity>
+        </View>
+
+        <FlatList
+          data={products}
+          renderItem={renderProduct}
+          keyExtractor={(item) => `featured-${item.id}`}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.productsScroll}
+        />
+
+        <View style={{ height: 100 }} />
       </ScrollView>
     </View>
   );
-
 }
 
 const styles = StyleSheet.create({
@@ -129,24 +260,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 50,
     paddingBottom: 10,
-
   },
   logo: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1F5C40',
+    width: 150,
+    height: 40,
   },
   subtitle: {
     fontSize: 14,
     color: 'rgba(0, 0, 0, 0.75)',
     paddingHorizontal: 20,
-
     marginBottom: 15,
   },
   searchContainer: {
-
-
-
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
@@ -157,7 +282,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   searchIcon: {
-
     marginRight: 10,
   },
   searchInput: {
@@ -169,64 +293,59 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 10,
-
-    marginBottom: 25,
+    marginBottom: 10,
   },
   arrowLeft: {
-    width: 30,
-    height: 30,
+    width: 35,
+    height: 35,
     backgroundColor: '#000',
-    borderRadius: 5,
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
   },
   arrowRight: {
-    width: 30,
-    height: 30,
+    width: 35,
+    height: 35,
     backgroundColor: '#000',
-
-    borderRadius: 5,
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-
     marginLeft: 10,
   },
-  banner: {
+  bannerList: {
     flex: 1,
-    height: 140,
-    backgroundColor: '#FFA07A',
-    borderRadius: 12,
-
-    padding: 15,
-
-
+  },
+  bannerItem: {
+    width: width - 110,
+    height: 180,
+    borderRadius: 0,
+    overflow: 'hidden',
+  },
+  bannerImage: {
+    width: '100%',
+    height: '100%',
+  },
+  dotsContainer: {
+    flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
   },
-  bannerBadge: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#FFF',
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-
-
-    alignSelf: 'flex-start',
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#D4A574',
+    marginHorizontal: 4,
   },
-  bannerDiscount: {
-    fontSize: 20,
-    fontWeight: 'bold',
-
-
-    color: '#FFF',
-    marginTop: 5,
+  activeDot: {
+    backgroundColor: '#E97A3A',
+    width: 24,
   },
   categoriesScroll: {
     paddingLeft: 20,
-
-
+    paddingRight: 20,
     marginBottom: 25,
   },
   categoryCard: {
@@ -234,10 +353,8 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   categoryIcon: {
-    width: 60,
-    height: 60,
-
-
+    width: 70,
+    height: 70,
     backgroundColor: '#FFF',
     borderRadius: 12,
     justifyContent: 'center',
@@ -245,119 +362,126 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-
     shadowRadius: 4,
     elevation: 3,
+    padding: 10,
   },
-  categoryEmoji: {
-
-    fontSize: 28,
+  categoryImage: {
+    width: 40,
+    height: 40,
   },
   categoryName: {
-    fontSize: 10,
-
+    fontSize: 12,
     color: '#000',
     marginTop: 8,
+    fontWeight: '500',
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-
     paddingHorizontal: 20,
     marginBottom: 15,
   },
   sectionTitle: {
-    fontSize: 16,
-
+    fontSize: 18,
     fontWeight: '600',
     color: '#1F5C40',
   },
   viewAll: {
-    fontSize: 12,
-
+    fontSize: 14,
     fontWeight: '500',
     color: '#E97A3A',
   },
+  productsScroll: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginBottom: 25,
+  },
   productCard: {
-    width: 160,
-
+    width: 180,
     backgroundColor: '#FFF',
     borderRadius: 16,
-    marginLeft: 20,
-
-    marginBottom: 20,
+    marginRight: 15,
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-
     shadowRadius: 4,
     elevation: 3,
   },
-
-  productPlaceholder: {
+  productImage: {
     width: '100%',
-    height: 140,
-    backgroundColor: '#f5f5f5',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: 150,
   },
   productInfo: {
     padding: 12,
   },
-
   productName: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '500',
     color: '#000',
     marginBottom: 5,
   },
   productPrice: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#E97A3A',
   },
-  discountBadge: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: '#D4A574',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
+  quickLinkVet: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFF',
+    marginHorizontal: 20,
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  discountText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-
-
-    color: '#FFF',
+  quickLinkText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F5C40',
+    marginLeft: 10,
   },
   doctorBanner: {
-    height: 120,
+    height: 140,
     backgroundColor: '#4FC3F7',
     borderRadius: 16,
     marginHorizontal: 20,
-    marginBottom: 20,
-
-    padding: 15,
-
-    justifyContent: 'center',
+    marginBottom: 25,
+    padding: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  doctorContent: {
+    flex: 1,
   },
   doctorTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-
     color: '#FFF',
   },
   doctorSubtitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-
     color: '#FFF',
     marginTop: 5,
+  },
+  doctorImage: {
+    width: 100,
+    height: 100,
   },
 });

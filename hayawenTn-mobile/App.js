@@ -1,57 +1,55 @@
-// App.js
-import React, { useContext, useEffect, useState } from 'react';
+import 'react-native-gesture-handler';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-// Auth Screens
+// Auth
 import SplashScreen from './src/screens/auth/SplashScreen';
+import OnboardingScreen from './src/screens/auth/OnboardingScreen';
 import LoginScreen from './src/screens/auth/LoginScreen';
 import RegisterScreen from './src/screens/auth/RegisterScreen';
-import OnboardingScreen from './src/screens/auth/OnboardingScreen';
+import ForgotPasswordScreen from './src/screens/auth/ForgotPasswordScreen';
 
-// Main App
+// Profile
+import ProfileScreen from './src/screens/profile/ProfileScreen';
+import EditProfileScreen from './src/screens/profile/EditProfileScreen';
+import ChangePasswordScreen from './src/screens/profile/ChangePasswordScreen';
+
+// Announcements
+import MyAnnouncementsScreen from './src/screens/announcements/MyAnnouncementsScreen';
+
+// Navigation
 import TabNavigator from './src/navigation/TabNavigator';
-
-// Context
-import { AuthContext } from './src/context/AuthContext';
-import StoreScreen from './src/screens/products/ProductsScreen';
-import VeterinariansScreen from './src/screens/veterinarians/VeterinariansScreen';
-
 
 const Stack = createStackNavigator();
 
-// Écrans sans navbar (authentification)
-function AuthNavigator() {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Splash" component={SplashScreen} />
-      <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Register" component={RegisterScreen} />
-    </Stack.Navigator>
-  );
-}
-
-// Écrans AVEC navbar (après login)
-function MainNavigator() {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Main" component={TabNavigator} />
-      {/* Vous pourrez ajouter ici les écrans détaillés comme ProductDetails */}
-    </Stack.Navigator>
-  );
-}
-
-// App racine
 export default function App() {
-  const [user, setUser] = useState(null); // ou utilisez AuthContext si prêt
-
-  // Simulation : pour le moment, on force l’accès à Home
-  const isLoggedIn = true; // ← à remplacer plus tard par user !== null
-
   return (
     <NavigationContainer>
-      {isLoggedIn ? <MainNavigator /> : <AuthNavigator />}
+      <Stack.Navigator
+        initialRouteName="Splash"
+        screenOptions={{
+          headerShown: false,
+          gestureEnabled: true,
+        }}
+      >
+        {/* Auth Flow */}
+        <Stack.Screen name="Splash" component={SplashScreen} />
+        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+
+        {/* Main App */}
+        <Stack.Screen name="MainApp" component={TabNavigator} />
+
+        {/* Profile Screens */}
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+        <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+
+        {/* My Announcements */}
+        <Stack.Screen name="MyAnnouncements" component={MyAnnouncementsScreen} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
