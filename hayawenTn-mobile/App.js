@@ -14,7 +14,8 @@ import ChangePasswordScreen from './src/screens/profile/ChangePasswordScreen';
 import MyAnnouncementsScreen from './src/screens/announcements/MyAnnouncementsScreen';
 import ProductDetailsScreen from './src/screens/products/ProductDetailsScreen';
 import TabNavigator from './src/navigation/TabNavigator';
-
+import AnnouncementDetailScreen from './src/screens/announcements/AnnouncementDetailsScreen';
+import AddAnnouncementScreen from './src/screens/announcements/AddAnnouncementScreen';
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -38,6 +39,8 @@ export default function App() {
         <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
         <Stack.Screen name="MyAnnouncements" component={MyAnnouncementsScreen} />
         <Stack.Screen name="ProductDetail" component={ProductDetailsScreen} />
+        <Stack.Screen name="AnnouncementDetail" component={AnnouncementDetailScreen} />
+        <Stack.Screen name="AddAnnouncement" component={AddAnnouncementScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

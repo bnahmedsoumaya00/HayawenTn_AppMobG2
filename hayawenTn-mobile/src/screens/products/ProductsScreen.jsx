@@ -260,7 +260,11 @@ export default function ProductsScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.logo}>HayaWenTN</Text>
+       <Image
+                             source={require('../../assets/images/logo-header.png')}
+                             style={styles.logo}
+                             resizeMode="contain"
+                           />
       </View>
 
       <View style={styles.searchContainer}>
@@ -374,10 +378,9 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingBottom: 15,
   },
-  logo: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1F5C40',
+    logo: {
+    width: 150,
+    height: 40,
   },
   searchContainer: {
     flexDirection: 'row',

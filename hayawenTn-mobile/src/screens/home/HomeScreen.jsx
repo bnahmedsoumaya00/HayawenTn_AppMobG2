@@ -20,7 +20,6 @@ export default function HomeScreen({ navigation }) {
 
   // 3 images du banner qui changent automatiquement
   const banners = [
-    require('../../assets/affiche/banner1.png'),
     require('../../assets/affiche/banner2.png'),
     require('../../assets/affiche/banner3.png'),
   ];
