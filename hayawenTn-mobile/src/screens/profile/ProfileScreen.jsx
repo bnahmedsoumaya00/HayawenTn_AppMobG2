@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,123 +7,141 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoginScreen from '../auth/LoginScreen'; // ✅ Import LoginScreen
 
 export default function ProfileScreen({ navigation }) {
-  const [user, setUser] = useState({
-    name: 'Tesnime Ben',
-    phone: '+216 22 222 222',
-    email: 'tesnime@gmail.com',
-    avatar: null,
-  });
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const handleLogout = () => {
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
+  // ✅ Recharger les données quand on revient sur l'écran
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadUserData();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const loadUserData = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const userDataString = await AsyncStorage.getItem('userData');
+
+      if (!token || !userDataString) {
+        setIsLoggedIn(false);
+        setLoading(false);
+        return;
+      }
+
+      const user = JSON.parse(userDataString);
+      setUserData(user);
+      setIsLoggedIn(true);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      setIsLoggedIn(false);
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
     Alert.alert(
-      'Déconnexion',
-      'Êtes-vous sûr de vouloir vous déconnecter ?',
+      'Logout',
+      'Are you sure you want to logout?',
       [
-        { text: 'Annuler', style: 'cancel' },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Déconnexion',
+          text: 'Logout',
           style: 'destructive',
-          onPress: () => {
-            // TODO: Nettoyer les données utilisateur
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Login' }],
-            });
+          onPress: async () => {
+            await AsyncStorage.removeItem('userToken');
+            await AsyncStorage.removeItem('userData');
+            setIsLoggedIn(false);
+            setUserData(null);
           },
         },
       ]
     );
   };
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#E97A3A" />
+      </View>
+    );
+  }
+
+  // ✅ Si pas connecté, afficher directement le LoginScreen
+  if (!isLoggedIn) {
+    return <LoginScreen navigation={navigation} />;
+  }
+
+  // ✅ Si connecté, afficher le profil
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-left" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Profile</Text>
-        <TouchableOpacity>
-          <Icon name="settings" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Avatar */}
-        <View style={styles.avatarContainer}>
-          <View style={styles.avatar}>
-            {user.avatar ? (
-              <Image source={{ uri: user.avatar }} style={styles.avatarImage} />
-            ) : (
-              <Text style={styles.avatarText}>{user.name.charAt(0)}</Text>
-            )}
-          </View>
-          <View style={styles.activeIndicator} />
-        </View>
-
-        {/* Info Section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Name</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('EditProfile')}>
-              <View style={styles.editButton}>
-                <Icon name="edit-2" size={16} color="#1F5C40" />
-                <Text style={styles.editText}>Edit</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.infoCard}>
-            <Text style={styles.infoText}>{user.name}</Text>
-          </View>
-        </View>
-
-        {/* Phone Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Phone</Text>
-          <View style={styles.infoCard}>
-            <Text style={styles.infoText}>{user.phone}</Text>
-          </View>
-        </View>
-
-        {/* Email Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Email</Text>
-          <View style={styles.infoCard}>
-            <Text style={styles.infoText}>{user.email}</Text>
-          </View>
-        </View>
-
-        {/* Password Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Password</Text>
-          <View style={styles.infoCard}>
-            <Text style={styles.infoText}>************</Text>
-          </View>
-          <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')}>
-            <Text style={styles.changePasswordText}>Change Password</Text>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Profile</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('EditProfile')}>
+            <Icon name="edit" size={24} color="#1F5C40" />
           </TouchableOpacity>
         </View>
 
-        {/* My Announcements Button */}
-        <TouchableOpacity
-          style={styles.announcementsButton}
-          onPress={() => navigation.navigate('MyAnnouncements')}
-        >
-          <Icon name="file-text" size={20} color="#1F5C40" />
-          <Text style={styles.announcementsButtonText}>Mes Annonces</Text>
-          <Icon name="chevron-right" size={20} color="#1F5C40" />
-        </TouchableOpacity>
+        <View style={styles.profileImageContainer}>
+        
+          <TouchableOpacity style={styles.cameraButton}>
+            <Icon name="camera" size={20} color="#FFF" />
+          </TouchableOpacity>
+        </View>
 
-        {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Icon name="log-out" size={20} color="#FFFFFF" />
-          <Text style={styles.logoutButtonText}>Déconnexion</Text>
-        </TouchableOpacity>
+        <Text style={styles.userName}>
+          {userData?.firstName} {userData?.lastName}
+        </Text>
+        <Text style={styles.userEmail}>{userData?.email}</Text>
+
+        <View style={styles.menuContainer}>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => navigation.navigate('EditProfile')}
+          >
+            <Icon name="user" size={22} color="#1F5C40" />
+            <Text style={styles.menuText}>Edit Profile</Text>
+            <Icon name="chevron-right" size={22} color="#666" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => navigation.navigate('MyAnnouncements')}
+          >
+            <Icon name="heart" size={22} color="#1F5C40" />
+            <Text style={styles.menuText}>My Announcements</Text>
+            <Icon name="chevron-right" size={22} color="#666" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => navigation.navigate('ChangePassword')}
+          >
+            <Icon name="lock" size={22} color="#1F5C40" />
+            <Text style={styles.menuText}>Change Password</Text>
+            <Icon name="chevron-right" size={22} color="#666" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+            <Icon name="log-out" size={22} color="#FF0000" />
+            <Text style={[styles.menuText, { color: '#FF0000' }]}>Logout</Text>
+            <Icon name="chevron-right" size={22} color="#666" />
+          </TouchableOpacity>
+        </View>
 
         <View style={{ height: 100 }} />
       </ScrollView>
@@ -136,137 +154,77 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F1E6D5',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F1E6D5',
+  },
   header: {
-    backgroundColor: '#1F5C40',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 50,
     paddingBottom: 20,
-    borderBottomLeftRadius: 32,
-    borderBottomRightRadius: 32,
   },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#1F5C40',
   },
-  content: {
-    flex: 1,
-    marginTop: -30,
+  profileImageContainer: {
+    alignSelf: 'center',
+    marginBottom: 20,
+    position: 'relative',
   },
-  avatarContainer: {
+  profileImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 3,
+    borderColor: '#E97A3A',
+  },
+  cameraButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#E97A3A',
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  userName: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1F5C40',
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  userEmail: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
     marginBottom: 30,
   },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 26,
-    backgroundColor: '#4B8B6D',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 4,
-    borderColor: '#FFFFFF',
+  menuContainer: {
+    paddingHorizontal: 20,
   },
-  avatarImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 22,
-  },
-  avatarText: {
-    fontSize: 40,
-    fontWeight: '400',
-    color: '#FFFFFF',
-  },
-  activeIndicator: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: '#50CD89',
-    position: 'absolute',
-    bottom: 5,
-    right: '40%',
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-  },
-  section: {
-    marginHorizontal: 20,
-    marginBottom: 20,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '500',
-    color: '#1F5C40',
-  },
-  editButton: {
+  menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
+    backgroundColor: '#FFF',
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    borderRadius: 12,
+    marginBottom: 15,
   },
-  editText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#1F5C40',
-  },
-  infoCard: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 2.208,
-    borderColor: '#F7F8F8',
-    borderRadius: 14.91,
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-  },
-  infoText: {
-    fontSize: 14,
-    color: '#4B8B6D',
-  },
-  changePasswordText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#1F5C40',
-    textAlign: 'right',
-    marginTop: 8,
-  },
-  announcementsButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#FFFFFF',
-    marginHorizontal: 20,
-    padding: 16,
-    borderRadius: 14.91,
-    borderWidth: 2,
-    borderColor: '#1F5C40',
-    marginBottom: 20,
-  },
-  announcementsButtonText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#1F5C40',
+  menuText: {
     flex: 1,
-    marginLeft: 10,
-  },
-  logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#E97A3A',
-    marginHorizontal: 20,
-    padding: 16,
-    borderRadius: 10,
-    gap: 10,
-  },
-  logoutButtonText: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#FFFFFF',
+    fontSize: 16,
+    color: '#000',
+    marginLeft: 15,
   },
 });

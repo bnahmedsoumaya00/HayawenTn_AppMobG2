@@ -248,9 +248,7 @@ export default function AnnouncementsScreen({ navigation }) {
                       style={styles.logo}
                       resizeMode="contain"
                     />
-          <TouchableOpacity>
-            <Icon name="bell" size={24} color="#1F5C40" />
-          </TouchableOpacity>
+         
         </View>
 
         <Text style={styles.subtitle}>Hi, Discover animals...</Text>

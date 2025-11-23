@@ -8,7 +8,7 @@ import HomeScreen from '../screens/home/HomeScreen';
 import AnnouncementsScreen from '../screens/announcements/AnnouncementsScreen';
 import ProductsScreen from '../screens/products/ProductsScreen';
 import VeterinariansScreen from '../screens/veterinarians/VeterinariansScreen';
-import ProfileScreen from '../screens/profile/ProfileScreen';
+import ProfileScreen from '../screens/profile/ProfileScreen'; // ✅ CORRIGÉ
 
 const Tab = createBottomTabNavigator();
 
@@ -19,8 +19,7 @@ export default function TabNavigator() {
         headerShown: false,
         tabBarStyle: styles.tabBar,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: '#E97A3A',
-        tabBarActiveBackgroundColor:'#fffefdff',
+        tabBarActiveTintColor: '#FFFFFF',
         tabBarInactiveTintColor: '#1F5C40',
       }}
     >
@@ -28,8 +27,8 @@ export default function TabNavigator() {
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <View style={styles.iconContainer}>
+          tabBarIcon: ({ focused, color }) => (
+            <View style={focused ? styles.iconContainerActive : styles.iconContainer}>
               <Icon name="home" size={28} color={color} />
             </View>
           ),
@@ -40,8 +39,8 @@ export default function TabNavigator() {
         name="Announcements"
         component={AnnouncementsScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <View style={styles.iconContainer}>
+          tabBarIcon: ({ focused, color }) => (
+            <View style={focused ? styles.iconContainerActive : styles.iconContainer}>
               <Icon name="heart" size={28} color={color} />
             </View>
           ),
@@ -52,8 +51,8 @@ export default function TabNavigator() {
         name="Products"
         component={ProductsScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <View style={styles.iconContainer }>
+          tabBarIcon: ({ focused, color }) => (
+            <View style={focused ? styles.iconContainerActive : styles.iconContainer}>
               <Icon name="shopping-bag" size={28} color={color} />
             </View>
           ),
@@ -64,8 +63,8 @@ export default function TabNavigator() {
         name="Veterinarians"
         component={VeterinariansScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <View style={styles.iconContainer}>
+          tabBarIcon: ({ focused, color }) => (
+            <View style={focused ? styles.iconContainerActive : styles.iconContainer}>
               <MaterialCommunityIcons name="stethoscope" size={28} color={color} />
             </View>
           ),
@@ -76,8 +75,8 @@ export default function TabNavigator() {
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <View style={styles.iconContainer}>
+          tabBarIcon: ({ focused, color }) => (
+            <View style={focused ? styles.iconContainerActive : styles.iconContainer}>
               <Icon name="user" size={28} color={color} />
             </View>
           ),
@@ -93,8 +92,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 38,
     borderTopRightRadius: 38,
     height: 90,
-    paddingBottom: 15,
-    paddingTop: 10,
+    paddingBottom:35,
+    paddingTop: 18,
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -109,14 +108,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-   iconContainerActive: {
+  iconContainerActive: {
     width: 70,
     height: 70,
     borderRadius: 35,
     backgroundColor: '#E97A3A',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 30,
+    marginBottom: 100,
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },

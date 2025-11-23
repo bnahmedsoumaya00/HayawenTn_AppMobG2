@@ -117,9 +117,7 @@ export default function HomeScreen({ navigation }) {
             style={styles.logo}
             resizeMode="contain"
           />
-          <TouchableOpacity>
-            <Icon name="bell" size={24} color="#1F5C40" />
-          </TouchableOpacity>
+          
         </View>
 
         <Text style={styles.subtitle}>Hi, Discover posts...</Text>
@@ -198,15 +196,6 @@ export default function HomeScreen({ navigation }) {
           contentContainerStyle={styles.productsScroll}
         />
 
-        {/* Lien rapide vers Vétérinaires */}
-        <TouchableOpacity
-          style={styles.quickLinkVet}
-          onPress={() => navigation.navigate('Veterinarians')}
-        >
-          <Icon name="heart" size={20} color="#E97A3A" />
-          <Text style={styles.quickLinkText}>Find a Veterinarian</Text>
-          <Icon name="arrow-right" size={20} color="#E97A3A" />
-        </TouchableOpacity>
 
         {/* Banner Vétérinaire (2 images alternées) */}
         <TouchableOpacity

@@ -9,23 +9,44 @@ import {
   Image,
   FlatList,
   Dimensions,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
+
+// ✅ Fonction pour vérifier la connexion AVANT le composant
+const checkLoginAndNavigate = async (navigation) => {
+  try {
+    const token = await AsyncStorage.getItem('userToken');
+    if (token) {
+      navigation.navigate('AddProduct');
+    } else {
+      Alert.alert(
+        'Login Required',
+        'You need to login to add a product',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Login', onPress: () => navigation.navigate('Login') }
+        ]
+      );
+    }
+  } catch (error) {
+    console.error('Error checking login:', error);
+  }
+};
 
 export default function ProductsScreen({ navigation }) {
   const [selectedCategory, setSelectedCategory] = useState('Dress');
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const bannerScrollRef = useRef(null);
 
-  // ✅ 3 images du banner
   const banners = [
     require('../../assets/affiche/banner2.png'),
     require('../../assets/affiche/banner3.png'),
   ];
 
-  // ✅ Catégories avec icônes PNG (pas emoji)
   const categories = [
     { id: 1, name: 'Dress', icon: require('../../assets/icons/dress.png') },
     { id: 2, name: 'Food', icon: require('../../assets/icons/food.png') },
@@ -34,7 +55,6 @@ export default function ProductsScreen({ navigation }) {
     { id: 6, name: 'Toy', icon: require('../../assets/icons/toy.png') },
   ];
 
-  // ✅ Changement automatique du banner toutes les 3 secondes
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBannerIndex((prevIndex) => {
@@ -46,13 +66,11 @@ export default function ProductsScreen({ navigation }) {
     return () => clearInterval(interval);
   }, []);
 
-  // ✅ Navigation flèche gauche
   const handlePrevBanner = () => {
     const newIndex = currentBannerIndex === 0 ? banners.length - 1 : currentBannerIndex - 1;
     setCurrentBannerIndex(newIndex);
   };
 
-  // ✅ Navigation flèche droite
   const handleNextBanner = () => {
     const newIndex = (currentBannerIndex + 1) % banners.length;
     setCurrentBannerIndex(newIndex);
@@ -232,7 +250,6 @@ export default function ProductsScreen({ navigation }) {
           image: require('../../assets/accessoires/toy3.png'),
           description: 'Smart toy that keeps pets entertained.',
         },
-       
       ],
     },
   };
@@ -260,11 +277,11 @@ export default function ProductsScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-       <Image
-                             source={require('../../assets/images/logo-header.png')}
-                             style={styles.logo}
-                             resizeMode="contain"
-                           />
+        <Image
+          source={require('../../assets/images/logo-header.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
       </View>
 
       <View style={styles.searchContainer}>
@@ -278,7 +295,6 @@ export default function ProductsScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* ✅ Banner avec 3 images et flèches */}
       <View style={styles.bannerContainer}>
         <TouchableOpacity style={styles.arrowButton} onPress={handlePrevBanner}>
           <Icon name="chevron-left" size={20} color="#000" />
@@ -295,7 +311,6 @@ export default function ProductsScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* ✅ Indicateurs de pagination */}
       <View style={styles.dotsContainer}>
         {banners.map((_, index) => (
           <View
@@ -308,7 +323,6 @@ export default function ProductsScreen({ navigation }) {
         ))}
       </View>
 
-      {/* ✅ Catégories avec icônes PNG */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -364,6 +378,14 @@ export default function ProductsScreen({ navigation }) {
         ))}
         <View style={{ height: 100 }} />
       </ScrollView>
+
+      {/* ✅ Bouton flottant */}
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => checkLoginAndNavigate(navigation)}
+      >
+        <Icon name="plus" size={28} color="#FFF" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -378,7 +400,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingBottom: 15,
   },
-    logo: {
+  logo: {
     width: 150,
     height: 40,
   },
@@ -445,17 +467,15 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     marginBottom: 10,
-    maxHeight: 200,
+    maxHeight: 100,
   },
   categoryCard: {
     alignItems: 'center',
     marginRight: 15,
-    width:70,
-    height:200,
   },
   categoryIcon: {
     width: 70,
-    height: 80,
+    height: 70,
     backgroundColor: '#FFF',
     borderRadius: 12,
     justifyContent: 'center',
@@ -471,13 +491,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#E97A3A',
   },
   categoryImage: {
-    width: 32,
-    height: 32,
-   
+    width: 35,
+    height: 35,
   },
   categoryName: {
     fontSize: 12,
     color: '#090909ff',
+    marginTop: 8,
   },
   categoryNameActive: {
     color: '#E97A3A',
@@ -485,8 +505,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingBottom: 50,
-    top:15,
-
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -511,7 +529,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   productCard: {
-    width:180,
+    width: 180,
     backgroundColor: '#FFF',
     borderRadius: 16,
     marginRight: 15,
@@ -549,5 +567,21 @@ const styles = StyleSheet.create({
   detailsText: {
     fontSize: 11,
     color: '#666',
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 100,
+    right: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#E97A3A',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
 });

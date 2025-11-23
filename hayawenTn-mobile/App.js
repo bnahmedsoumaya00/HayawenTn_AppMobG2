@@ -13,6 +13,7 @@ import EditProfileScreen from './src/screens/profile/EditProfileScreen';
 import ChangePasswordScreen from './src/screens/profile/ChangePasswordScreen';
 import MyAnnouncementsScreen from './src/screens/announcements/MyAnnouncementsScreen';
 import ProductDetailsScreen from './src/screens/products/ProductDetailsScreen';
+import AddProductScreen from './src/screens/products/AddProductScreen';
 import TabNavigator from './src/navigation/TabNavigator';
 import AnnouncementDetailScreen from './src/screens/announcements/AnnouncementDetailsScreen';
 import AddAnnouncementScreen from './src/screens/announcements/AddAnnouncementScreen';
@@ -30,7 +31,6 @@ export default function App() {
       >
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="MainApp" component={TabNavigator} />
@@ -41,6 +41,14 @@ export default function App() {
         <Stack.Screen name="ProductDetail" component={ProductDetailsScreen} />
         <Stack.Screen name="AnnouncementDetail" component={AnnouncementDetailScreen} />
         <Stack.Screen name="AddAnnouncement" component={AddAnnouncementScreen} />
+        <Stack.Screen name="AddProduct" component={AddProductScreen} />
+        <Stack.Screen 
+  name="Login" 
+  component={LoginScreen}
+  options={{
+    presentation: 'modal', // ✅ Ouvre en modal
+  }}
+/>
       </Stack.Navigator>
     </NavigationContainer>
   );

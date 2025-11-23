@@ -8,18 +8,65 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    // Appel API login
-    console.log('Login:', { email, password });
-    navigation.replace('MainApp');
+  const handleLogin = async () => {
+    // ✅ Validation
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill all fields');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // ✅ Appel API login (remplacez par votre vraie URL)
+      const response = await fetch('YOUR_API_URL/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+      console.log('Response:', data);
+
+      // ✅ Si connexion réussie
+      if (data.token && data.user) {
+        // Sauvegarder le token et les données utilisateur
+        await AsyncStorage.setItem('userToken', data.token);
+        await AsyncStorage.setItem('userData', JSON.stringify(data.user));
+
+        console.log('Login Success:', data.user);
+
+        // ✅ Si on est dans le ProfileScreen (TabNavigator)
+        if (navigation.canGoBack()) {
+          navigation.goBack(); // Retourne au ProfileScreen qui se rechargera
+        } else {
+          navigation.replace('MainApp'); // Sinon va à MainApp
+        }
+      } else {
+        Alert.alert('Error', 'Invalid email or password');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      Alert.alert('Error', 'Connection failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,14 +75,12 @@ export default function LoginScreen({ navigation }) {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.content}>
-        {/* Logo */}
         <Image
           source={require('../../assets/images/logo.png')}
           style={styles.logo}
           resizeMode="contain"
         />
 
-        {/* Input Email */}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -48,7 +93,6 @@ export default function LoginScreen({ navigation }) {
           />
         </View>
 
-        {/* Input Password */}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -70,19 +114,20 @@ export default function LoginScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* Forgot Password */}
-        <TouchableOpacity
-          onPress={() => navigation.navigate('ForgotPassword')}
-        >
+        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
           <Text style={styles.forgotPassword}>Forgot Password?</Text>
         </TouchableOpacity>
 
-        {/* Login Button */}
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Login</Text>
+        <TouchableOpacity 
+          style={styles.loginButton} 
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          <Text style={styles.loginButtonText}>
+            {loading ? 'Loading...' : 'Login'}
+          </Text>
         </TouchableOpacity>
 
-        {/* Register Button */}
         <TouchableOpacity
           style={styles.registerButton}
           onPress={() => navigation.navigate('Register')}
@@ -91,8 +136,6 @@ export default function LoginScreen({ navigation }) {
           <Icon name="arrow-right" size={20} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
-
-     
     </KeyboardAvoidingView>
   );
 }
@@ -127,7 +170,6 @@ const styles = StyleSheet.create({
     borderRadius: 14.91,
     paddingHorizontal: 24,
     fontSize: 14,
-    fontFamily: 'Poppins-Regular',
     color: '#000',
   },
   eyeIcon: {
@@ -137,7 +179,6 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     fontSize: 15,
-    fontFamily: 'Poppins-Medium',
     color: '#1F5C40',
     textDecorationLine: 'underline',
     marginBottom: 20,
@@ -156,7 +197,6 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     fontSize: 20,
-    fontFamily: 'Poppins-Medium',
     color: '#FFFFFF',
     letterSpacing: 0.4,
   },
@@ -172,30 +212,7 @@ const styles = StyleSheet.create({
   },
   registerButtonText: {
     fontSize: 20,
-    fontFamily: 'Poppins-Medium',
     color: '#FFFFFF',
     letterSpacing: 0.4,
-  },
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    height: 70,
-    borderTopLeftRadius: 38,
-    borderTopRightRadius: 38,
-    paddingHorizontal: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 10,
-  },
-  navIcon: {
-    padding: 10,
-  },
-  navIconActive: {
-    backgroundColor: '#F1E6D5',
-    borderRadius: 20,
   },
 });
