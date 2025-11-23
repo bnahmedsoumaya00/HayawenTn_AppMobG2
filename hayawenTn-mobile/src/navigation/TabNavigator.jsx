@@ -8,7 +8,7 @@ import HomeScreen from '../screens/home/HomeScreen';
 import AnnouncementsScreen from '../screens/announcements/AnnouncementsScreen';
 import ProductsScreen from '../screens/products/ProductsScreen';
 import VeterinariansScreen from '../screens/veterinarians/VeterinariansScreen';
-import LoginScreen from '../screens/auth/LoginScreen';
+import ProfileScreen from '../screens/profile/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,18 +19,18 @@ export default function TabNavigator() {
         headerShown: false,
         tabBarStyle: styles.tabBar,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: '#fff',
+        tabBarActiveTintColor: '#E97A3A',
+        tabBarActiveBackgroundColor:'#fffefdff',
         tabBarInactiveTintColor: '#1F5C40',
       }}
     >
-
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ color, focused }) => (
-            <View style={focused ? styles.iconActive : styles.iconInactive}>
-              <Icon name="home" size={28} color={focused ? '#fff' : color} />
+          tabBarIcon: ({ color }) => (
+            <View style={styles.iconContainer}>
+              <Icon name="home" size={28} color={color} />
             </View>
           ),
         }}
@@ -40,9 +40,9 @@ export default function TabNavigator() {
         name="Announcements"
         component={AnnouncementsScreen}
         options={{
-          tabBarIcon: ({ color, focused }) => (
-            <View style={focused ? styles.iconActive : styles.iconInactive}>
-              <Icon name="heart" size={28} color={focused ? '#fff' : color} />
+          tabBarIcon: ({ color }) => (
+            <View style={styles.iconContainer}>
+              <Icon name="heart" size={28} color={color} />
             </View>
           ),
         }}
@@ -52,9 +52,9 @@ export default function TabNavigator() {
         name="Products"
         component={ProductsScreen}
         options={{
-          tabBarIcon: ({ color, focused }) => (
-            <View style={focused ? styles.iconActive : styles.iconInactive}>
-              <Icon name="shopping-bag" size={28} color={focused ? '#fff' : color} />
+          tabBarIcon: ({ color }) => (
+            <View style={styles.iconContainer }>
+              <Icon name="shopping-bag" size={28} color={color} />
             </View>
           ),
         }}
@@ -64,26 +64,25 @@ export default function TabNavigator() {
         name="Veterinarians"
         component={VeterinariansScreen}
         options={{
-          tabBarIcon: ({ color, focused }) => (
-            <View style={focused ? styles.iconActive : styles.iconInactive}>
-              <MaterialCommunityIcons name="stethoscope" size={28} color={focused ? '#fff' : color} />
+          tabBarIcon: ({ color }) => (
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons name="stethoscope" size={28} color={color} />
             </View>
           ),
         }}
       />
 
       <Tab.Screen
-        name="LoginScreen"
-        component={LoginScreen}
+        name="Profile"
+        component={ProfileScreen}
         options={{
-          tabBarIcon: ({ color, focused }) => (
-            <View style={focused ? styles.iconActive : styles.iconInactive}>
-              <Icon name="user" size={28} color={focused ? '#fff' : color} />
+          tabBarIcon: ({ color }) => (
+            <View style={styles.iconContainer}>
+              <Icon name="user" size={28} color={color} />
             </View>
           ),
         }}
       />
-
     </Tab.Navigator>
   );
 }
@@ -94,8 +93,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 38,
     borderTopRightRadius: 38,
     height: 90,
-    paddingBottom: 20,
-    paddingTop: 3,
+    paddingBottom: 15,
+    paddingTop: 10,
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -106,16 +105,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
   },
-
-  iconInactive: {
+  iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-
-  iconActive: {
+   iconContainerActive: {
     width: 70,
     height: 70,
-    borderRadius: 40,
+    borderRadius: 35,
     backgroundColor: '#E97A3A',
     alignItems: 'center',
     justifyContent: 'center',
