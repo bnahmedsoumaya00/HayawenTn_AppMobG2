@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import apiClient from '../../services/api/apiClient';
 
 export default function AddAnnouncementScreen({ navigation }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,7 +21,7 @@ export default function AddAnnouncementScreen({ navigation }) {
 
   // Formulaire
   const [formData, setFormData] = useState({
-    name: '',
+    title: '',
     category: 'Dogs',
     age: '',
     gender: 'Male',
@@ -53,28 +54,55 @@ export default function AddAnnouncementScreen({ navigation }) {
       setLoading(false);
     }
   };
-
-  const handleSubmit = () => {
-    // Validation
-    if (!formData.name || !formData.age || !formData.location || !formData.price) {
-      Alert.alert('Error', 'Please fill all required fields');
-      return;
-    }
-
-    // Envoyer les données
-    Alert.alert('Success', 'Your announcement has been posted!', [
-      { text: 'OK', onPress: () => navigation.goBack() }
-    ]);
-  };
-
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text>Loading...</Text>
-      </View>
-    );
+const handleSubmit = async () => {
+  // Validation
+  if (!formData.name || !formData.age || !formData.location) {
+    Alert.alert('Error', 'Please fill all required fields');
+    return;
   }
 
+  try {
+    setLoading(true);
+
+    // Récupérer l'ID de l'utilisateur
+    const userDataString = await AsyncStorage.getItem('userData');
+    const userData = JSON.parse(userDataString);
+
+    // Préparer les données
+    const announcementData = {
+      title: formData.name,
+      description: formData.description || `${formData.category} - ${formData.gender} - ${formData.age}`,
+      animal_type: formData.category.toLowerCase(),
+      animal_name: formData.name,
+      age: formData.age,
+      price: formData.price || '0',
+      location: formData.location,
+      contact_phone: formData.phone,
+      type: formData.price === '0' || !formData.price ? 'adoption' : 'sale',
+      breed: formData.gender,
+      status: 'active',
+    };
+
+    console.log('Sending announcement:', announcementData);
+
+    // Envoyer à l'API
+    const response = await apiClient.post('/announcements', announcementData);
+
+    if (response.data.success) {
+      Alert.alert('Success', 'Your announcement has been posted!', [
+        { 
+          text: 'OK', 
+          onPress: () => navigation.navigate('MyAnnouncements')
+        }
+      ]);
+    }
+  } catch (error) {
+    console.error('Submit error:', error);
+    Alert.alert('Error', error.response?.data?.message || 'Failed to create announcement');
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <View style={styles.container}>
       {/* Modal de connexion requise */}

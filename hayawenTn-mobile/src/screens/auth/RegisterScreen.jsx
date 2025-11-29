@@ -3,29 +3,60 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   TextInput,
-  ScrollView,
+  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Alert,
+  ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { register } from '../../services/api/authApi';  // ← AJOUTER CETTE LIGNE
 
 export default function RegisterScreen({ navigation }) {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = () => {
-    if (password !== confirmPassword) {
-      alert('Passwords do not match!');
+  const handleRegister = async () => {
+    if (!email || !password || !displayName || !phoneNumber) {
+      Alert.alert('Error', 'Please fill all fields');
       return;
     }
-    console.log('Register:', { firstName, lastName, email, password });
-  };
 
+    // Séparer displayName en firstName et lastName
+    const names = displayName.trim().split(' ');
+    const firstName = names[0] || '';
+    const lastName = names.slice(1).join(' ') || names[0];
+
+    setLoading(true);
+
+    try {
+      const userData = {
+        email: email.trim(),
+        password,
+        firstName,
+        lastName,
+        phone: phoneNumber.trim()
+      };
+      
+      console.log('Register:', userData);
+      
+      const response = await register(userData);
+
+      if (response.success) {
+        Alert.alert('Success', 'Account created successfully!');
+        navigation.replace('MainApp');
+      }
+    } catch (error) {
+      console.error('Register error:', error);
+      Alert.alert('Error', error.message || 'Registration failed');
+    } finally {
+      setLoading(false);
+    }};
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -45,51 +76,68 @@ export default function RegisterScreen({ navigation }) {
         <Text style={styles.subtitle}>Start By Creating an Account</Text>
 
         {/* Form */}
-        <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder="First Name"
-            placeholderTextColor="#8A96BC"
-            value={firstName}
-            onChangeText={setFirstName}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Last Name"
-            placeholderTextColor="#8A96BC"
-            value={lastName}
-            onChangeText={setLastName}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#8A96BC"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#8A96BC"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Confirm Password"
-            placeholderTextColor="#8A96BC"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            secureTextEntry
-          />
+       {/* Display Name */}
+<View style={styles.inputContainer}>
+  <TextInput
+    style={styles.input}
+    placeholder="Enter Display Name"
+    placeholderTextColor="#8A96BC"
+    value={displayName}
+    onChangeText={setDisplayName}
+  />
+</View>
+
+{/* Phone Number */}
+<View style={styles.inputContainer}>
+  <TextInput
+    style={styles.input}
+    placeholder="Enter Phone Number"
+    placeholderTextColor="#8A96BC"
+    value={phoneNumber}
+    onChangeText={setPhoneNumber}
+    keyboardType="phone-pad"
+  />
+</View>
+
+{/* Email */}
+<View style={styles.inputContainer}>
+  <TextInput
+    style={styles.input}
+    placeholder="Enter Email"
+    placeholderTextColor="#8A96BC"
+    value={email}
+    onChangeText={setEmail}
+    keyboardType="email-address"
+    autoCapitalize="none"
+  />
+</View>
+
+{/* Password */}
+<View style={styles.inputContainer}>
+  <TextInput
+    style={styles.input}
+    placeholder="Enter Password"
+    placeholderTextColor="#8A96BC"
+    value={password}
+    onChangeText={setPassword}
+    secureTextEntry={!showPassword}
+  />
+  <TouchableOpacity
+    style={styles.eyeIcon}
+    onPress={() => setShowPassword(!showPassword)}
+  >
+    <Icon
+      name={showPassword ? 'eye' : 'eye-off'}
+      size={20}
+      color="#8A96BC"
+    />
+  </TouchableOpacity>
+</View>
 
           <TouchableOpacity style={styles.signupButton} onPress={handleRegister}>
             <Text style={styles.signupButtonText}>Sign Up</Text>
           </TouchableOpacity>
-        </View>
+        
       </ScrollView>
     </KeyboardAvoidingView>
   );
