@@ -241,23 +241,6 @@ npm start
 
 ### 3️⃣ Frontend Setup
 
-<table>
-<tr>
-<td width="50%">
-
-#### 📦 Install Dependencies
-
-```bash
-# Navigate to frontend folder
-cd hayawenTn-mobile
-
-# Install all dependencies
-npm install
-```
-
-</td>
-<td width="50%">
-
 #### ⚙️ Configure API
 
 ```javascript
