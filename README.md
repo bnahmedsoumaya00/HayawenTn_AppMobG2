@@ -11,13 +11,13 @@
 **🎓 Integration Project - License in Multimedia and Web Development**  
 *Higher Institute of Technological Studies of Kelibia (ISET Kelibia)*
 
-**حيوانات تونس - Animals of Tunisia**
+**حيوان تونس - Animals of Tunisia**
 
 ---
 
 ## 📖 About The Project
 
-**HayawenTn** (حيوانات تونس - "Animals of Tunisia") is a comprehensive cross-platform mobile e-commerce application that bridges the gap between pet owners, sellers, and veterinary services across Tunisia.
+**HayawenTn** (حيوان تونس - "Animals of Tunisia") is a comprehensive cross-platform mobile e-commerce application that bridges the gap between pet owners, sellers, and veterinary services across Tunisia.
 
 ### 🎯 Project Context
 
