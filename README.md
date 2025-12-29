@@ -21,7 +21,7 @@
 
 ### 🎯 Project Context
 
-This application represents our **Final Year Integration Project (PFE)** for academic year **2024/2025**, developed as part of the **License in Multimedia and Web Development** program at **ISET Kelibia**, Tunisia.
+This application represents our **Final Year Integration Project** for academic year **2025/2026**, developed as part of the **License in Multimedia and Web Development** program at **ISET Kelibia**, Tunisia.
 
 ### 🏆 Project Goals
 
@@ -288,123 +288,6 @@ npx expo start
 # Scan QR code with Expo Go app (Android/iOS)
 # Or press 'a' for Android emulator / 'i' for iOS simulator
 ```
-
----
-
-## 📊 Database Schema
-
-```sql
--- Users: Store registered user accounts
-CREATE TABLE users (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,  -- bcrypt hashed
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    phone VARCHAR(20),
-    profile_photo VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Products: Pet products catalog
-CREATE TABLE products (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    category VARCHAR(100),
-    price DECIMAL(10,2),
-    image_url VARCHAR(255),
-    available BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
--- Announcements: Pet sale/adoption posts
-CREATE TABLE announcements (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT,
-    type ENUM('sale', 'adoption'),
-    animal_type VARCHAR(100),
-    breed VARCHAR(100),
-    age INT,
-    description TEXT,
-    price DECIMAL(10,2),
-    contact_phone VARCHAR(20),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- Announcement Images: Support multiple photos per announcement
-CREATE TABLE announcement_images (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    announcement_id INT,
-    image_url VARCHAR(255),
-    display_order INT,
-    FOREIGN KEY (announcement_id) REFERENCES announcements(id) ON DELETE CASCADE
-);category VARCHAR(100),
-    price DECIMAL(10,2),
-  
-CREATE TABLE veterinarians (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255),
-    specialty VARCHAR(100),
-    phone VARCHAR(20),
-    email VARCHAR(255),
-    address TEXT,
-    city VARCHAR(100)
-);
-
--- Favorites: User saved announcements
-CREATE TABLE favorites (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT,
-    announcement_id INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (announcement_id) REFERENCES announcements(id) ON DELETE CASCADE,
-    UNIQUE(user_id, announcement_id)
-);
-```
-
----
-
-## 🔌 API Endpoints
-
-### Authentication
-```http
-POST   /api/users/register     # Create new account
-POST   /api/users/login        # Login and get JWT token
-GET    /api/users/profile      # Get user profile (protected)
-PUT    /api/users/profile      # Update profile (protected)
-```
-
-### Products
-```http
-GET    /api/products           # Get all products (query: ? category=food&search=dog)
-GET    /api/products/:id       # Get product details
-```
-
-### Announcements
-```http
-GET    /api/announcements                # Get all announcements (query: ?type=sale&animal_type=dog)
-GET    /api/announcements/:id            # Get announcement details
-POST   /api/announcements                # Create announcement (protected)
-PUT    /api/announcements/:id            # Update announcement (protected, owner only)
-DELETE /api/announcements/:id            # Delete announcement (protected, owner only)
-```
-
-### Veterinarians
-```http
-GET    /api/veterinarians      # Get all vets (query: ?specialty=dogs&city=Tunis)
-GET    /api/veterinarians/:id  # Get vet details
-```
-
-### Favorites
-```http
-GET    /api/favorites          # Get user favorites (protected)
-POST   /api/favorites          # Add to favorites (protected)
-DELETE /api/favorites/:id      # Remove from favorites (protected)
-```
-
 ---
 
 ## 🎨 Design & User Experience
@@ -598,7 +481,7 @@ For inquiries, collaboration, or feedback, feel free to reach out!
 
 - **GitHub**: [@bnahmedsoumaya00](https://github.com/bnahmedsoumaya00)
 - **LinkedIn**: [Connect with us](https://www.linkedin.com/in/soumayabenahmed/)
-- **Email**: Via GitHub Profile
+- **Email**: soumaya.ben.ahmed.009@gmail.com
 - **Repository**: [HayawenTn_AppMobG2](https://github.com/bnahmedsoumaya00/HayawenTn_AppMobG2)
 
 ---
@@ -629,7 +512,7 @@ For inquiries, collaboration, or feedback, feel free to reach out!
 **Institution**: Higher Institute of Technological Studies of Kelibia (ISET Kelibia)  
 **Department**: Information Technology  
 **Program**: License in Multimedia and Web Development  
-**Project Type**: Final Year Integration Project (PFE - Projet de Fin d'Études)  
+**Project Type**: Final Year Integration Project 
 **Academic Year**: 2024/2025  
 **Group**: AppMob_G2  
 **Location**: Kelibia, Tunisia 🇹🇳
