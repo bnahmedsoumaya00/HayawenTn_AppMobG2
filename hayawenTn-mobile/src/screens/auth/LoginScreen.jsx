@@ -11,7 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { login } from '../../services/api/authApi';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -20,7 +20,6 @@ export default function LoginScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    // ✅ Validation
     if (!email || !password) {
       Alert.alert('Error', 'Please fill all fields');
       return;
@@ -29,41 +28,28 @@ export default function LoginScreen({ navigation }) {
     setLoading(true);
 
     try {
-      // ✅ Appel API login (remplacez par votre vraie URL)
-      const response = await fetch('YOUR_API_URL/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
+      const credentials = {
+        email: email.trim(),
+        password
+      };
+      
+      console.log('Login:', credentials);
+      
+      const response = await login(credentials);
 
-      const data = await response.json();
-      console.log('Response:', data);
-
-      // ✅ Si connexion réussie
-      if (data.token && data.user) {
-        // Sauvegarder le token et les données utilisateur
-        await AsyncStorage.setItem('userToken', data.token);
-        await AsyncStorage.setItem('userData', JSON.stringify(data.user));
-
-        console.log('Login Success:', data.user);
-
-        // ✅ Si on est dans le ProfileScreen (TabNavigator)
+      if (response.success) {
+        Alert.alert('Success', 'Login successful!');
+        
+        // Si on vient du ProfileScreen
         if (navigation.canGoBack()) {
-          navigation.goBack(); // Retourne au ProfileScreen qui se rechargera
+          navigation.goBack();
         } else {
-          navigation.replace('MainApp'); // Sinon va à MainApp
+          navigation.replace('MainApp');
         }
-      } else {
-        Alert.alert('Error', 'Invalid email or password');
       }
     } catch (error) {
       console.error('Login error:', error);
-      Alert.alert('Error', 'Connection failed. Please try again.');
+      Alert.alert('Error', error.message || 'Login failed');
     } finally {
       setLoading(false);
     }

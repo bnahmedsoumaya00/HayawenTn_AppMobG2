@@ -1,13 +1,13 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// 🔥 IMPORTANT : Remplacez 192.168.1.15 par VOTRE adresse IP
-const API_BASE_URL = 'http://192.168.225.11/api';
+// 🔥 IMPORTANT : Remplacez par VOTRE adresse IP
+const API_BASE_URL = 'http://192.168.225.11:3000/api';
 
 // Créer une instance Axios
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 15000,
+  timeout: 30000, // Timeout de 30 secondes
   headers: {
     'Content-Type': 'application/json',
   },
@@ -21,24 +21,34 @@ apiClient.interceptors.request.use(
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
+      console.log('📡 API Request:', config.method.toUpperCase(), config.url);
     } catch (error) {
-      console.error('Error getting token:', error);
+      console.error('❌ Error getting token:', error);
     }
     return config;
   },
   (error) => {
+    console.error('❌ Request error:', error);
     return Promise.reject(error);
   }
 );
 
 // Intercepteur pour gérer les erreurs
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('✅ API Response:', response.config.url, response.status);
+    return response;
+  },
   async (error) => {
+    console.error('❌ API Error:', error.message);
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+    }
+    
     if (error.response?.status === 401) {
       // Token expiré ou invalide
       await AsyncStorage.removeItem('userToken');
-      // Rediriger vers login si nécessaire
     }
     return Promise.reject(error);
   }
