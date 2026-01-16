@@ -445,7 +445,6 @@ Sprint 4 (Weeks 7-8): Polish & Deploy
 
 ## 👥 Team
 
-<eam
 
 <table>
   <tr>
